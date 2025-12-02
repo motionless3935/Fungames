@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tic Tac Toe</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 40px;
+      background: #f0f8ff;
+    }
+    h1 { margin-bottom: 20px; }
+    #board {
+      display: grid;
+      grid-template-columns: repeat(3, 100px);
+      gap: 5px;
+    }
+    .cell {
+      width: 100px;
+      height: 100px;
+      background: #fff;
+      border: 2px solid #000;
+      font-size: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+    #status {
+      margin-top: 20px;
+      font-size: 18px;
+    }
+    button {
+      margin-top: 15px;
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Tic Tac Toe</h1>
+  <div id="board"></div>
+  <div id="status">X's turn</div>
+  <button onclick="resetGame()">Restart</button>
+
+  <script>
+    const board = document.getElementById('board');
+    const status = document.getElementById('status');
+    let cells = [];
+    let xIsNext = true;
+    let gameOver = false;
+
+    function createBoard() {
+      board.innerHTML = '';
+      cells = [];
+      for (let i = 0; i < 9; i++) {
+        const cell = document.createElement('div');
+        cell.classList.add('cell');
+        cell.addEventListener('click', () => handleClick(i));
+        board.appendChild(cell);
+        cells.push(cell);
+      }
+      xIsNext = true;
+      gameOver = false;
+      status.textContent = "X's turn";
+    }
+
+    function handleClick(i) {
+      if (cells[i].textContent || gameOver) return;
+      cells[i].textContent = xIsNext ? 'X' : 'O';
+      if (checkWinner()) {
+        status.textContent = `${xIsNext ? 'X' : 'O'} wins! 🎉`;
+        gameOver = true;
+      } else if (cells.every(c => c.textContent)) {
+        status.textContent = 'Draw!';
+        gameOver = true;
+      } else {
+        xIsNext = !xIsNext;
+        status.textContent = `${xIsNext ? 'X' : 'O'}'s turn`;
+      }
+    }
+
+    function checkWinner() {
+      const combos = [
+        [0,1,2],[3,4,5],[6,7,8],
+        [0,3,6],[1,4,7],[2,5,8],
+        [0,4,8],[2,4,6]
+      ];
+      return combos.some(([a,b,c]) => 
+        cells[a].textContent &&
+        cells[a].textContent === cells[b].textContent &&
+        cells[a].textContent === cells[c].textContent
+      );
+    }
+
+    function resetGame() {
+      createBoard();
+    }
+
+    createBoard();
+  </script>
+
+</body>
+</html>
